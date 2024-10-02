@@ -1,8 +1,6 @@
 import os
-import argparse
 import logging
 from typing import List, Optional
-
 
 def setup_logging(verbosity: bool, quiet: bool):
     """
@@ -151,37 +149,3 @@ def rename_directory(iso_file: str) -> bool:
     return True
 
 
-def main(directory):
-    """
-    Main function to rename ISO files and their directories based on SFV files.
-
-    Args:
-        directory (str): The directory to search for ISO files.
-    """
-    iso_files = get_iso_files(directory)
-    for iso_file in iso_files:
-        if rename_iso(iso_file):
-            rename_directory(iso_file)
-
-
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        description="Rename ISO files and their directories based on SFV files.")  # pragma: no cover
-    parser.add_argument(
-        "directory",
-        help="The directory to search for ISO files.")  # pragma: no cover
-    parser.add_argument(
-        "-v",
-        "--verbosity",
-        action="store_true",
-        help="Increase output verbosity to DEBUG level.")  # pragma: no cover
-    parser.add_argument(
-        "-q",
-        "--quiet",
-        action="store_true",
-        help="Decrease output verbosity to WARNING level.")  # pragma: no cover
-    args = parser.parse_args()  # pragma: no cover
-
-    setup_logging(args.verbosity, args.quiet)  # pragma: no cover
-
-    main(args.directory)  # pragma: no cover

@@ -3,7 +3,7 @@ import shutil
 import unittest
 import logging
 from unittest.mock import patch, MagicMock
-from rename_iso.rename_iso import setup_logging, get_iso_files, get_sfv_file_name, rename_iso, rename_directory, main
+from rename_iso.rename_iso import setup_logging, get_iso_files, get_sfv_file_name, rename_iso, rename_directory
 
 
 class BaseTest(unittest.TestCase):
@@ -151,29 +151,6 @@ class TestRenameDirectory(BaseTest):
         self.assertFalse(result)
         mock_logging_info.assert_called_once_with(
             f"Directory {os.path.dirname(iso_path)} already has the correct name."
-        )
-
-
-class TestMainFunction(BaseTest):
-
-    @patch('rename_iso.rename_iso.get_iso_files')
-    @patch('rename_iso.rename_iso.rename_iso')
-    @patch('rename_iso.rename_iso.rename_directory')
-    def test_main_function(self, mock_rename_directory,
-                           mock_rename_iso, mock_get_iso_files):
-        mock_get_iso_files.return_value = [
-            os.path.join(self.test_dir, 'test.iso')
-        ]
-        mock_rename_iso.return_value = True
-
-        main(self.test_dir)
-
-        mock_get_iso_files.assert_called_once_with(self.test_dir)
-        mock_rename_iso.assert_called_once_with(
-            os.path.join(self.test_dir, 'test.iso')
-        )
-        mock_rename_directory.assert_called_once_with(
-            os.path.join(self.test_dir, 'test.iso')
         )
 
 
