@@ -5,6 +5,7 @@ import logging
 from unittest.mock import patch, MagicMock
 from rename_iso.rename_iso import setup_logging, get_iso_files, get_sfv_file_name, rename_iso, rename_directory, main
 
+
 class BaseTest(unittest.TestCase):
 
     def setUp(self):
@@ -22,6 +23,7 @@ class BaseTest(unittest.TestCase):
         with open(path, 'w') as f:
             f.write(content)
 
+
 class TestSetupLogging(BaseTest):
 
     def test_verbosity_and_quiet(self):
@@ -31,17 +33,27 @@ class TestSetupLogging(BaseTest):
     @patch('logging.basicConfig')
     def test_verbosity(self, mock_basicConfig):
         setup_logging(verbosity=True, quiet=False)
-        mock_basicConfig.assert_called_once_with(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
+        mock_basicConfig.assert_called_once_with(
+            level=logging.DEBUG,
+            format='%(asctime)s - %(levelname)s - %(message)s'
+        )
 
     @patch('logging.basicConfig')
     def test_quiet(self, mock_basicConfig):
         setup_logging(verbosity=False, quiet=True)
-        mock_basicConfig.assert_called_once_with(level=logging.WARNING, format='%(asctime)s - %(levelname)s - %(message)s')
+        mock_basicConfig.assert_called_once_with(
+            level=logging.WARNING,
+            format='%(asctime)s - %(levelname)s - %(message)s'
+        )
 
     @patch('logging.basicConfig')
     def test_neither_verbosity_nor_quiet(self, mock_basicConfig):
         setup_logging(verbosity=False, quiet=False)
-        mock_basicConfig.assert_called_once_with(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+        mock_basicConfig.assert_called_once_with(
+            level=logging.INFO, 
+            format='%(asctime)s - %(levelname)s - %(message)s'
+        )
+
 
 class TestGetIsoFiles(BaseTest):
 
@@ -64,6 +76,7 @@ class TestGetIsoFiles(BaseTest):
         iso_files = get_iso_files(self.test_dir)
         self.assertEqual(iso_files, [])
 
+
 class TestGetSfvFileName(BaseTest):
 
     def test_get_sfv_file_name_no_sfv(self):
@@ -84,6 +97,7 @@ class TestGetSfvFileName(BaseTest):
         sfv_file_name = get_sfv_file_name(self.test_dir)
         self.assertIsNone(sfv_file_name)
 
+
 class TestRenameIso(BaseTest):
 
     def test_rename_iso_no_sfv(self):
@@ -103,6 +117,7 @@ class TestRenameIso(BaseTest):
         self.assertTrue(result)
         self.assertTrue(os.path.exists(new_iso_path))
         self.assertFalse(os.path.exists(iso_path))
+
 
 class TestRenameDirectory(BaseTest):
 
@@ -134,22 +149,33 @@ class TestRenameDirectory(BaseTest):
         self.create_file(iso_path)
         result = rename_directory(iso_path)
         self.assertFalse(result)
-        mock_logging_info.assert_called_once_with(f"Directory {os.path.dirname(iso_path)} already has the correct name.")
+        mock_logging_info.assert_called_once_with(
+            f"Directory {os.path.dirname(iso_path)} already has the correct name."
+        )
+
 
 class TestMainFunction(BaseTest):
 
     @patch('rename_iso.rename_iso.get_iso_files')
     @patch('rename_iso.rename_iso.rename_iso')
     @patch('rename_iso.rename_iso.rename_directory')
-    def test_main_function(self, mock_rename_directory, mock_rename_iso, mock_get_iso_files):
-        mock_get_iso_files.return_value = [os.path.join(self.test_dir, 'test.iso')]
+    def test_main_function(self, mock_rename_directory,
+                           mock_rename_iso, mock_get_iso_files):
+        mock_get_iso_files.return_value = [
+            os.path.join(self.test_dir, 'test.iso')
+        ]
         mock_rename_iso.return_value = True
 
         main(self.test_dir)
 
         mock_get_iso_files.assert_called_once_with(self.test_dir)
-        mock_rename_iso.assert_called_once_with(os.path.join(self.test_dir, 'test.iso'))
-        mock_rename_directory.assert_called_once_with(os.path.join(self.test_dir, 'test.iso'))
+        mock_rename_iso.assert_called_once_with(
+            os.path.join(self.test_dir, 'test.iso')
+        )
+        mock_rename_directory.assert_called_once_with(
+            os.path.join(self.test_dir, 'test.iso')
+        )
+
 
 if __name__ == '__main__':
     unittest.main()  # pragma: no cover
