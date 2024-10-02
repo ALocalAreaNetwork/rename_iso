@@ -119,20 +119,16 @@ def rename_directory(iso_file: str) -> bool:
     logging.info(f"Renamed directory from {directory} to {new_directory}")
     return True
 
-def main(directory, verbosity, quiet):
+def main(directory):
     """
     Main function to rename ISO files and their directories based on SFV files.
 
     Args:
         directory (str): The directory to search for ISO files.
-        verbosity (bool): If True, increase output verbosity to DEBUG level.
-        quiet (bool): If True, decrease output verbosity to WARNING level.
     """
-    setup_logging(verbosity, quiet)
     iso_files = get_iso_files(directory)
     for iso_file in iso_files:
-        rename_iso(iso_file)
-        if rename_iso:
+        if rename_iso(iso_file):
             rename_directory(iso_file)
 
 if __name__ == "__main__":
@@ -142,4 +138,6 @@ if __name__ == "__main__":
     parser.add_argument("-q", "--quiet", action="store_true", help="Decrease output verbosity to WARNING level.") # pragma: no cover
     args = parser.parse_args() # pragma: no cover
 
-    main(args.directory, args.verbosity, args.quiet) # pragma: no cover
+    setup_logging(args.verbosity, args.quiet) # pragma: no cover
+
+    main(args.directory) # pragma: no cover

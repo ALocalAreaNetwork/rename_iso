@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="rename_iso",
-    version="0.1.0",
+    version="0.1.1",
     description="A tool to rename ISO files and their directories based on SFV files.",
     author="ALocalAreaNetwork",
     author_email="ALocalAreaNet@proton.me",

@@ -2,7 +2,7 @@ import os
 import shutil
 import unittest
 import logging
-from unittest.mock import patch
+from unittest.mock import patch, MagicMock
 from rename_iso.rename_iso import setup_logging, get_iso_files, get_sfv_file_name, rename_iso, rename_directory, main
 
 class BaseTest(unittest.TestCase):
@@ -145,22 +145,11 @@ class TestMainFunction(BaseTest):
         mock_get_iso_files.return_value = [os.path.join(self.test_dir, 'test.iso')]
         mock_rename_iso.return_value = True
 
-        main(self.test_dir, verbosity=False, quiet=False)
+        main(self.test_dir)
 
         mock_get_iso_files.assert_called_once_with(self.test_dir)
         mock_rename_iso.assert_called_once_with(os.path.join(self.test_dir, 'test.iso'))
         mock_rename_directory.assert_called_once_with(os.path.join(self.test_dir, 'test.iso'))
-
-    @patch('rename_iso.rename_iso.get_iso_files')
-    @patch('rename_iso.rename_iso.rename_iso')
-    @patch('rename_iso.rename_iso.rename_directory')
-    def test_main_function_verbosity_and_quiet(self, mock_rename_directory, mock_rename_iso, mock_get_iso_files):
-        mock_get_iso_files.return_value = [os.path.join(self.test_dir, 'test.iso')]
-        mock_rename_iso.return_value = True
-
-        with self.assertRaises(ValueError):  # Assuming your main function raises a ValueError
-            main(self.test_dir, verbosity=True, quiet=True)
-
 
 if __name__ == '__main__':
     unittest.main()  # pragma: no cover
