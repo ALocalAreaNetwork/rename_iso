@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="rename_iso",
-    version="0.1.1",
+    version="0.2.0",
     description="A tool to rename ISO files and their directories based on SFV files.",
     author="ALocalAreaNetwork",
     author_email="ALocalAreaNet@proton.me",
@@ -10,7 +10,7 @@ setup(
     packages=find_packages(),
     entry_points={
         'console_scripts': [
-            'rename_iso=rename_iso.rename_iso:main',
+            'rename_iso=rename_iso.main:main',
         ],
     },
     install_requires=[],
