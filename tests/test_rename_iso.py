@@ -104,7 +104,7 @@ class TestRenameIso(BaseTest):
         iso_path = os.path.join(self.test_dir, 'test.iso')
         self.create_file(iso_path)
         result = rename_iso(iso_path)
-        self.assertFalse(result)
+        self.assertIsNone(result)
         self.assertTrue(os.path.exists(iso_path))
 
     def test_rename_iso_with_sfv(self):
@@ -114,9 +114,20 @@ class TestRenameIso(BaseTest):
         self.create_file(sfv_path)
         result = rename_iso(iso_path)
         new_iso_path = os.path.join(self.test_dir, 'new_name.iso')
-        self.assertTrue(result)
+        self.assertEqual(result, new_iso_path)
         self.assertTrue(os.path.exists(new_iso_path))
         self.assertFalse(os.path.exists(iso_path))
+
+    def test_rename_iso_multiple_sfv(self):
+        iso_path = os.path.join(self.test_dir, 'test.iso')
+        sfv_path_1 = os.path.join(self.test_dir, 'test1.sfv')
+        sfv_path_2 = os.path.join(self.test_dir, 'test2.sfv')
+        self.create_file(iso_path)
+        self.create_file(sfv_path_1)
+        self.create_file(sfv_path_2)
+        result = rename_iso(iso_path)
+        self.assertIsNone(result)
+        self.assertTrue(os.path.exists(iso_path))
 
 
 class TestRenameDirectory(BaseTest):
@@ -126,10 +137,10 @@ class TestRenameDirectory(BaseTest):
         sfv_path = os.path.join(self.game_dir_0, 'test.sfv')
         self.create_file(iso_path)
         self.create_file(sfv_path)
-        rename_iso(iso_path)  # Ensure the ISO file is renamed first
-        result = rename_directory(os.path.join(self.game_dir_0, 'test.iso'))
+        renamed_iso_path = rename_iso(iso_path)  # Ensure the ISO file is renamed first
+        result = rename_directory(renamed_iso_path)
         new_directory = os.path.join(self.test_dir, 'test')
-        self.assertTrue(result)
+        self.assertEqual(result, new_directory)
         self.assertTrue(os.path.exists(new_directory))
         self.assertFalse(os.path.exists(self.game_dir_0))
 
@@ -139,7 +150,7 @@ class TestRenameDirectory(BaseTest):
         self.create_file(iso_path_1)
         self.create_file(iso_path_2)
         result = rename_directory(iso_path_1)
-        self.assertFalse(result)
+        self.assertIsNone(result)
         self.assertTrue(os.path.exists(self.game_dir_0))
 
     @patch('logging.info')
@@ -148,7 +159,7 @@ class TestRenameDirectory(BaseTest):
         os.makedirs(os.path.dirname(iso_path), exist_ok=True)
         self.create_file(iso_path)
         result = rename_directory(iso_path)
-        self.assertFalse(result)
+        self.assertEqual(result, os.path.dirname(iso_path))
         mock_logging_info.assert_called_once_with(
             f"Directory {os.path.dirname(iso_path)} already has the correct name."
         )

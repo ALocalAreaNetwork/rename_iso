@@ -4,7 +4,7 @@ from typing import List, Optional
 
 def setup_logging(verbosity: bool, quiet: bool):
     """
-    Set up logging configuration based on verbosity and quiet flags.
+    Configure logging based on verbosity and quiet flags.
 
     Args:
         verbosity (bool): If True, set logging level to DEBUG.
@@ -30,7 +30,7 @@ def setup_logging(verbosity: bool, quiet: bool):
 
 def get_iso_files(directory: str) -> List[str]:
     """
-    Get a list of all ISO files in the given directory and its subdirectories.
+    Retrieve all ISO files in the specified directory and its subdirectories.
 
     Args:
         directory (str): The directory to search for ISO files.
@@ -48,7 +48,7 @@ def get_iso_files(directory: str) -> List[str]:
 
 def get_sfv_file_name(directory: str) -> Optional[str]:
     """
-    Get the base name of the SFV file in the given directory.
+    Retrieve the base name of the SFV file in the specified directory.
 
     Args:
         directory (str): The directory to search for an SFV file.
@@ -70,7 +70,7 @@ def get_sfv_file_name(directory: str) -> Optional[str]:
     return os.path.splitext(os.path.basename(sfv_files[0]))[0]
 
 
-def rename_iso(iso_file: str) -> bool:
+def rename_iso(iso_file: str) -> Optional[str]:
     """
     Rename the ISO file to match the SFV file name in the same directory.
 
@@ -78,7 +78,7 @@ def rename_iso(iso_file: str) -> bool:
         iso_file (str): The path to the ISO file to rename.
 
     Returns:
-        bool: True if the ISO file was renamed, False otherwise.
+        Optional[str]: The new path of the renamed ISO file, or None if renaming was not performed.
     """
     iso_directory = os.path.dirname(iso_file)
     iso_file_name = os.path.splitext(os.path.basename(iso_file))[0]
@@ -88,13 +88,13 @@ def rename_iso(iso_file: str) -> bool:
         logging.warning(
             f"Skipping ISO file {iso_file} because no .sfv file found."
         )
-        return False
+        return None
 
     if iso_file_name == sfv_file_name:
         logging.info(
             f"ISO file {iso_file} already has the correct name."
         )
-        return False
+        return iso_file
 
     new_iso_file = os.path.join(iso_directory, sfv_file_name + '.iso')
     os.rename(iso_file, new_iso_file)
@@ -102,10 +102,10 @@ def rename_iso(iso_file: str) -> bool:
         f"Renamed ISO file from {iso_file} to {new_iso_file}"
     )
 
-    return True
+    return new_iso_file
 
 
-def rename_directory(iso_file: str) -> bool:
+def rename_directory(iso_file: str) -> Optional[str]:
     """
     Rename the directory containing the ISO file to match the ISO file name.
 
@@ -113,7 +113,7 @@ def rename_directory(iso_file: str) -> bool:
         iso_file (str): The path to the ISO file whose directory is to be renamed.
 
     Returns:
-        bool: True if the directory was renamed, False otherwise.
+        Optional[str]: The new path of the renamed directory, or None if renaming was not performed.
     """
     directory = os.path.dirname(iso_file)
     iso_file_name = os.path.splitext(os.path.basename(iso_file))[0]
@@ -123,7 +123,7 @@ def rename_directory(iso_file: str) -> bool:
         logging.info(
             f"Directory {directory} already has the correct name."
         )
-        return False
+        return directory
 
     files_in_directory = [file for file
                           in os.listdir(directory)
@@ -138,7 +138,7 @@ def rename_directory(iso_file: str) -> bool:
         logging.warning(
             f"Directory {directory} contains multiple .iso files. Skipping renaming."
         )
-        return False
+        return None
 
     new_directory = os.path.join(os.path.dirname(directory), iso_file_name)
     os.rename(directory, new_directory)
@@ -146,6 +146,4 @@ def rename_directory(iso_file: str) -> bool:
         f"Renamed directory from {directory} to {new_directory}"
     )
     
-    return True
-
-
+    return new_directory
