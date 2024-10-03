@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2024-10-02 - 0.2.1
+
+### Changed
+- `rename_iso` function now returns a string of the file name if the name matches the SFV file name
+- `rename_directory` function now returns a string of the file name if the name matches the ISO file name
+
+### Fixed
+- `main` will now pass in the `renamed_iso_file` to the `rename_directory` function as it should
+
+### Known Bugs
+- CRITICAL: Multiple ISOs in the same directory will cause an issue where ISOs will be overwritten until one ISO remains. Data will be lost if multiple ISOs are in a single directory.
+
 ## 2024-10-02 - 0.2.0
 
 ### Added
