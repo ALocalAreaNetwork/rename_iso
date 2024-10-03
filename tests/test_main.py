@@ -14,7 +14,7 @@ class BaseTest(unittest.TestCase):
 
     def tearDown(self):
         shutil.rmtree(self.test_dir)
-        
+
 
 class TestParseArguments(BaseTest):
 
@@ -44,7 +44,7 @@ class TestMainFunction(BaseTest):
         mock_get_iso_files.return_value = [
             os.path.join(self.test_dir, 'test.iso')
         ]
-        mock_rename_iso.return_value = True
+        mock_rename_iso.return_value = os.path.join(self.test_dir, 'renamed_test.iso')
 
         main()
 
@@ -55,7 +55,7 @@ class TestMainFunction(BaseTest):
             os.path.join(self.test_dir, 'test.iso')
         )
         mock_rename_directory.assert_called_once_with(
-            os.path.join(self.test_dir, 'test.iso')
+            os.path.join(self.test_dir, 'renamed_test.iso')
         )
 
 

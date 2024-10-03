@@ -33,17 +33,20 @@ def main():
     """
     Main function to rename ISO files and their directories based on SFV files.
     
-    This function parses command-line arguments, sets up logging based on verbosity flags,
-    retrieves ISO files from the specified directory, and renames each ISO file and its
-    corresponding directory if the renaming is successful.
+    This function:
+    - Parses command-line arguments.
+    - Sets up logging based on verbosity flags.
+    - Retrieves ISO files from the specified directory.
+    - Renames each ISO file and its corresponding directory if the renaming is successful.
     """
     args = parse_arguments()
     setup_logging(args.verbosity, args.quiet)
 
     iso_files = get_iso_files(args.directory)
     for iso_file in iso_files:
-        if rename_iso(iso_file):
-            rename_directory(iso_file)
+        renamed_iso_file = rename_iso(iso_file)
+        if renamed_iso_file:
+            rename_directory(renamed_iso_file)
 
 
 if __name__ == "__main__":
